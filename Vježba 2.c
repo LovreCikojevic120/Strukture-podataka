@@ -1,9 +1,9 @@
-/*  Definirati strukturu osoba (ime, prezime, godina roðenja) i napisati program koji:
-a) dinamièki dodaje novi element na poèetak liste,
+/*  Definirati strukturu osoba (ime, prezime, godina roÄ‘enja) i napisati program koji:
+a) dinamiÄki dodaje novi element na poÄetak liste,
 b) ispisuje listu,
-c) dinamièki dodaje novi element na kraj liste,
+c) dinamiÄki dodaje novi element na kraj liste,
 d) pronalazi element u listi (po prezimenu),
-e) briše odreðeni element iz liste,
+e) briÅ¡e odreÄ‘eni element iz liste,
 U zadatku se ne smiju koristiti globalne varijable  */
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -28,9 +28,9 @@ void UnosP(Pozicija p)
     while(1){
     q = (Pozicija)malloc(sizeof(_osoba));
 	printf("Ime, prezime, godina rodenja:\n");
-    scanf("%s", &q->ime);
+    scanf(" %s", &q->ime);
 	if(!strcmp(q->ime,"stop")) break;
-    scanf("%s %d", &q->prezime, &q->godina);
+    scanf(" %s %d", &q->prezime, &q->godina);
     if(!strcmp(q->ime,"stop")) break;
     q->next = p->next;
     p->next = q;
@@ -53,9 +53,9 @@ void UnosK(Pozicija p)
     while(1){
     q = (Pozicija)malloc(sizeof(_osoba));
     printf("Ime, prezime, godina rodenja:\n");
-	scanf("%s", &q->ime);
+	scanf(" %s", &q->ime);
 	if(!strcmp(q->ime,"stop")) break;
-    scanf("%s %d", &q->prezime, &q->godina);
+    scanf(" %s %d", &q->prezime, &q->godina);
     while(p->next != 0)
         p = p->next;
     q->next = p->next;
@@ -65,9 +65,9 @@ void UnosK(Pozicija p)
 
 void Trazi(Pozicija p)
 {
-    char unos[50];
+	char unos[50] = {0};
 	printf("\nUnesite prezime:\n");
-    scanf("%s", unos);
+    scanf(" %s", unos);
 
     while(strcmp(unos, p->prezime)){
         p = p->next;
@@ -93,10 +93,10 @@ Pozicija TraziPret(char unos[], Pozicija p){
 
 int Brisi(Pozicija p)
 {
-    Pozicija priv;
-    char unos[50];
+    Pozicija priv = 0;
+	char unos[50] = {0};
 	printf("\nUnesite ime osobe koju zelite obrisati iz liste\n");
-    scanf("%s", unos);
+    scanf(" %s", unos);
     p = TraziPret(unos, p);
                 priv = p->next;
                 p->next = p->next->next;
@@ -106,7 +106,7 @@ int Brisi(Pozicija p)
 
 int main()
 {
-    char c;
+    char c = 0;
 	_osoba Head;
 	Head.next = 0;
 	povratak: printf("\n1 - dinamicki dodaje novi element na pocetak liste\n2 - ispisuje listu\n3 - dinamicki dodaje novi element na kraj liste\n4 - pronalazi element u listi (po prezimenu)\n5 - brise odredeni element iz liste\n6 - kraj\n\n");
