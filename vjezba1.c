@@ -4,7 +4,7 @@
 #include<stdlib.h>
 #include<ctype.h>
 
-typedef struct{
+typedef struct {
 
 	char ime[20];
 	char prezime[20];
@@ -13,7 +13,7 @@ typedef struct{
 }Student;
 
 int brojStud(FILE*);
-int unos(FILE*, Student* ,int);
+int unos(FILE*, Student*, int);
 int prosjek(FILE*, Student*, int);
 int ispis(FILE*, Student*, int);
 Student* alokacija(FILE*, Student*, int);
@@ -27,7 +27,7 @@ int main() {
 	studenti = fopen("studenti.txt", "r");
 
 	br = brojStud(studenti);
-	
+
 	student = alokacija(studenti, student, br);
 	unos(studenti, student, br);
 	ispis(studenti, student, br);
@@ -35,7 +35,7 @@ int main() {
 	return 0;
 }
 
-Student * alokacija(FILE* studenti, Student* student, int br){
+Student * alokacija(FILE* studenti, Student* student, int br) {
 
 	student = (Student*)malloc(br * sizeof(Student));
 	return student;
@@ -43,7 +43,7 @@ Student * alokacija(FILE* studenti, Student* student, int br){
 }
 
 int brojStud(FILE* studenti) {
-	
+
 	int br = 0;
 	while (!feof(studenti)) {
 
@@ -52,17 +52,17 @@ int brojStud(FILE* studenti) {
 
 	rewind(studenti);
 
-	return br + 1;
+	return br;
 }
 
 int unos(FILE* studenti, Student* student, int br) {
-	
+
 	int i = 0;
 	for (i = 0; i < br; i++) {
 
 		fscanf(studenti, "%d %s %s", &student[i].bodovi, student[i].ime, student[i].prezime);
 	}
-	
+
 	return 0;
 }
 
@@ -79,7 +79,7 @@ int prosjek(FILE* studenti, Student* student, int br) {
 int ispis(FILE* studenti, Student* student, int br) {
 
 	int i = 0;
-	for (i = 0; i < br; i++) {
+	for (i = 0; i < br-1; i++) {
 		student[i].rel_bod = (float)student[i].bodovi / prosjek(studenti, student, br) * 100;
 		printf("%d %.2f %s %s\n", student[i].bodovi, student[i].rel_bod, student[i].ime, student[i].prezime);
 	}
