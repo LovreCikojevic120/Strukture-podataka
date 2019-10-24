@@ -4,6 +4,8 @@
 #include<stdlib.h>
 #include<ctype.h>
 
+#define MAX_LENGTH 1024
+
 typedef struct {
 
 	char ime[20];
@@ -12,61 +14,82 @@ typedef struct {
 	float rel_bod;
 }Student;
 
-int brojStud(FILE*);
-int unos(FILE*, Student*, int);
-int prosjek(FILE*, Student*, int);
-int ispis(FILE*, Student*, int);
-Student* alokacija(FILE*, Student*, int);
+char* naziv(char*);
+int brojStud(char*);
+int unos(char*, Student*, int);
+int prosjek(Student*, int);
+int ispis(Student*, int);
+Student* alokacija(char*, Student*, int);
 
 
 int main() {
 
 	int br = 0;
+	char* fileName = NULL;
 	Student* student = NULL;
-	FILE* studenti;
-	studenti = fopen("studenti.txt", "r");
 
-	br = brojStud(studenti);
+	fileName = naziv(fileName);
+	
+	br = brojStud(fileName);
 
-	student = alokacija(studenti, student, br);
-	unos(studenti, student, br);
-	ispis(studenti, student, br);
-	fclose(studenti);
+	student = alokacija(fileName, student, br);
+	unos(fileName, student, br);
+	ispis(student, br);
 	return 0;
 }
 
-Student * alokacija(FILE* studenti, Student* student, int br) {
+char* naziv(char* fileName) {
 
+	fileName = (char*)malloc(MAX_LENGTH * sizeof(char));
+	memset(fileName, '\0', MAX_LENGTH);
+	printf("Ime datoteke?\n");
+	scanf("%s", fileName);
+	if (strchr(fileName, '.') == NULL)strcat(fileName, ".txt");
+	return fileName;
+}
+
+Student* alokacija(char* fileName, Student* student, int br) {
+
+	FILE* f = NULL;
+	f = fopen(fileName, "r");
 	student = (Student*)malloc(br * sizeof(Student));
+	fclose(f);
 	return student;
 
 }
 
-int brojStud(FILE* studenti) {
+int brojStud(char* fileName) {
 
 	int br = 0;
-	while (!feof(studenti)) {
+	char temp[MAX_LENGTH] = { 0 };
+	FILE* f = NULL;
+	f = fopen(fileName, "r");
 
-		if (fgetc(studenti) == '\n') br++;
+	while (!feof(f)) {
+
+		fgets(temp, MAX_LENGTH, f);
+		if (strlen(temp) == 0) continue;
+		br++;
 	}
-
-	rewind(studenti);
-
-	return br;
+	fclose(f);
+	return br + 1;
 }
 
-int unos(FILE* studenti, Student* student, int br) {
+int unos(char* fileName, Student* student, int br) {
 
 	int i = 0;
+	FILE* f = NULL;
+	f = fopen(fileName, "r");
 	for (i = 0; i < br; i++) {
 
-		fscanf(studenti, "%d %s %s", &student[i].bodovi, student[i].ime, student[i].prezime);
+		fscanf(f, "%d %s %s", &student[i].bodovi, student[i].ime, student[i].prezime);
 	}
+	fclose(f);
 
 	return 0;
 }
 
-int prosjek(FILE* studenti, Student* student, int br) {
+int prosjek(Student* student, int br) {
 
 	int i = 0;
 	int max = student[0].bodovi;
@@ -76,11 +99,11 @@ int prosjek(FILE* studenti, Student* student, int br) {
 	return max;
 }
 
-int ispis(FILE* studenti, Student* student, int br) {
+int ispis(Student* student, int br) {
 
 	int i = 0;
-	for (i = 0; i < br-1; i++) {
-		student[i].rel_bod = (float)student[i].bodovi / prosjek(studenti, student, br) * 100;
+	for (i = 0; i < br - 1; i++) {
+		student[i].rel_bod = (float)student[i].bodovi / prosjek(student, br) * 100;
 		printf("%d %.2f %s %s\n", student[i].bodovi, student[i].rel_bod, student[i].ime, student[i].prezime);
 	}
 	return 0;
