@@ -1,6 +1,6 @@
-/*Napisati program za zbrajanje i mnoûenje polinoma.Koeficijenti i eksponenti se
-Ëitaju iz datoteke.
-Napomena: Eksponenti u datoteci nisu nuûno sortirani.*/
+/*Napisati program za zbrajanje i mno≈æenje polinoma.Koeficijenti i eksponenti se
+ƒçitaju iz datoteke.
+Napomena: Eksponenti u datoteci nisu nu≈æno sortirani.*/
 
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LENGTH 1024
