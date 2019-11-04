@@ -22,6 +22,7 @@ typedef struct Clan {
 	Pozicija next;
 }clan;
 
+void brisi(Pozicija, Pozicija);
 int unesi(Pozicija, int);
 int upis(Pozicija);
 int unija(Pozicija, Pozicija, Pozicija);
@@ -42,17 +43,22 @@ int main() {
 	
 	upis(&Lista1);
 	upis(&Lista2);
+	//presjek(&Lista1, &Lista2, &Presjek);
 	unija(&Lista1, &Lista2, &Unija);
+	//ispis(Presjek.next);
 	ispis(Unija.next);
 
 	return 0;
 }
 
 Pozicija traziPret(Pozicija head, Pozicija clan) {
-	Pozicija q = head;
-	head = head->next;
-	while (q != clan)q = q->next;
-
+	
+	Pozicija p = head, q = NULL;
+	p = p->next;
+	while (p != NULL && p->el != clan->el) {
+		q = p;
+		p = p->next;
+	}
 	return q;
 }
 
@@ -69,15 +75,14 @@ int upis(Pozicija head) {
 	return 0;
 }
 
-int brisi(Pozicija head, Pozicija a) {
-	Pozicija temp = NULL;
+void brisi(Pozicija head, Pozicija a) {
+	Pozicija temp = NULL, x = a;
 	puts("3");
-	a = traziPret(head, a);
+	x = traziPret(head, a);
 	puts("4");
-	temp = a->next;
-	a->next = a->next->next;
+	temp = x->next;
+	x->next = x->next->next;
 	free(temp);
-	return 0;
 }
 
 int unesi(Pozicija head, int x) {
@@ -90,22 +95,28 @@ int unesi(Pozicija head, int x) {
 	q->el = x;
 	q->next = p->next;
 	p->next = q;
+	return 0;
 }
 
 int unija(Pozicija lista1, Pozicija lista2, Pozicija unija) {
 
-	Pozicija L1 = lista1->next, L2 = lista2->next, u = unija, prethodni = NULL, brisac=NULL;
-	while (L1 != NULL && L2 != NULL) {
-		if (L1->el == L2->el) {
-			brisi(&lista2, L2);
+	Pozicija L1 = lista1, L2 = lista2, u = unija;
+	while (L1->next != NULL && L2->next != NULL) {
+		if (L1->next->el == L2->next->el) {
+			puts("5");
+			brisi(lista2, L2->next);
 			puts("1");
-			L1 = L1->next;
 			L2 = L2->next;
 		}
 		else{
 			puts("2");
 			L2 = L2->next;
 		}
+		if (L2->next == NULL) {
+			L1 = L1->next;
+			L2 = lista2;
+		}
+
 	}
 	u->next = lista1->next;
 	while (u->next != NULL)u = u->next;
@@ -113,6 +124,30 @@ int unija(Pozicija lista1, Pozicija lista2, Pozicija unija) {
 
 	return 0;
 }
+/*
+int presjek(Pozicija lista1, Pozicija lista2, Pozicija presjek) {
+
+	Pozicija L1 = lista1, L2 = lista2, p = presjek, prethodni = NULL, brisac = NULL;
+	while (L1->next != NULL && L2->next != NULL) {
+		if (L1->next->el == L2->next->el) {
+			puts("5");
+			unesi(presjek, L2->next->el);
+			puts("1");
+			L2 = L2->next;
+		}
+		else {
+			puts("2");
+			L2 = L2->next;
+		}
+		if (L2->next == NULL) {
+			L1 = L1->next;
+			L2 = lista2;
+		}
+
+	}
+
+	return 0;
+}*/
 
 int ispis(Pozicija p) {
 
