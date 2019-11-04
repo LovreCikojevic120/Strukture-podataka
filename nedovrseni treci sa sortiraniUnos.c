@@ -243,8 +243,7 @@ int sortiraniUnos(Pozicija p) {
 		while (kraj != p->next) {
 			pret = p;
 			q = p->next;
-			//while (kraj != q->next) {
-				//if (q->next->inicijal == 0)	break;
+			while (kraj != q->next) {
 				if (q->inicijal > q->next->inicijal) {
 					priv = q->next;
 					pret->next = priv;
