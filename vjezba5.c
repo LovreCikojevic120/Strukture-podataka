@@ -45,9 +45,9 @@ int main() {
 	upis(&Lista2);
 	presjek(&Lista1, &Lista2, &Presjek);
 	unija(&Lista1, &Lista2, &Unija);
-    printf("\nPresjek:\n");
+	printf("\nPresjek:\n");
 	ispis(Presjek.next);
-    printf("\nUnija:\n");
+	printf("\nUnija:\n");
 	ispis(Unija.next);
 
 	return 0;
@@ -55,13 +55,12 @@ int main() {
 
 Pozicija traziPret(Pozicija head, Pozicija clan) {
 
-	Pozicija p = head, q = p;
-	p = p->next;
+	Pozicija p = head->next, q = head;
 	while (p != NULL && p->el != clan->el) {
 		q = p;
 		p = p->next;
 	}
-    if (NULL == p) return 0;
+	if (p == NULL) return 0;
 	return q;
 }
 
@@ -71,7 +70,7 @@ int upis(Pozicija head) {
 	printf("Koliko clanova?\n");
 	scanf("%d", &br);
 	for (int i = 0; i < br; i++) {
-		printf("%d. clan:", i+1);
+		printf("%d. clan:", i + 1);
 		scanf("%d", &el);
 		unesi(head, el);
 	}
@@ -82,7 +81,8 @@ int brisi(Pozicija head, Pozicija a) {
 	Pozicija temp = NULL, x = a;
 	x = traziPret(head, a);
 	temp = x->next;
-	x->next = x->next->next;
+	if (a->next == NULL) x->next = NULL;
+	else x->next = x->next->next;
 	free(temp);
 	return 0;
 }
@@ -106,9 +106,10 @@ int unija(Pozicija lista1, Pozicija lista2, Pozicija unija) {
 	while (L1->next != NULL && L2->next != NULL) {
 		if (L1->next->el == L2->next->el) {
 			brisi(lista2, L2->next);
+			if (L2->next == NULL)break;
 			L2 = L2->next;
 		}
-		else{
+		else {
 			L2 = L2->next;
 		}
 		if (L2->next == NULL) {
@@ -117,10 +118,10 @@ int unija(Pozicija lista1, Pozicija lista2, Pozicija unija) {
 		}
 
 	}
+	
 	u->next = lista1->next;
 	while (u->next != NULL)u = u->next;
 	u->next = lista2->next;
-
 	return 0;
 }
 
