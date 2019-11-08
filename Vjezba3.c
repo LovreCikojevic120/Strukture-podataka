@@ -20,6 +20,7 @@ typedef struct osoba {
 	int godina;
 	char inicijal;
 	Pozicija next;
+	
 }_osoba;
 
 Pozicija inic(Pozicija x) {
