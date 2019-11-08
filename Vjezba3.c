@@ -289,7 +289,8 @@ int main()
 	_osoba Head;
 	Head.next = 0;
 
-povratak: printf("\n1 - dinamicki dodaje novi element na pocetak liste\n2 - ispisuje listu\n3 - dinamicki dodaje novi element na kraj liste\n4 - pronalazi element u listi (po prezimenu)\n5 - brise odredeni element iz liste\n6 - dinamicki dodaje novi element");
+do {
+	printf("\n1 - dinamicki dodaje novi element na pocetak liste\n2 - ispisuje listu\n3 - dinamicki dodaje novi element na kraj liste\n4 - pronalazi element u listi (po prezimenu)\n5 - brise odredeni element iz liste\n6 - dinamicki dodaje novi element");
 	printf(" iza odredenog elementa\n7 - dinamicki dodaje novi element ispred odredenog elementa\n8 - sortiraj\n9 - sortirani unos\n\nc- citanje liste iz datoteke\nu - unos u datoteku\nk - kraj\n");
 	scanf(" %c", &c);
 	switch (c) {
@@ -324,5 +325,5 @@ povratak: printf("\n1 - dinamicki dodaje novi element na pocetak liste\n2 - ispi
 	case 'k':   return 0;
 
 	}
-	goto povratak;
+} while(1);
 }
