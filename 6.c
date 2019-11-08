@@ -57,6 +57,7 @@ int push(Pozicija p) {
 	q->next = p->next;
 	p->next = q;
 	ispis(head->next);
+	return 0;
 }
 
 int popStog(Pozicija p) {
