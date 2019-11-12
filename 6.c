@@ -20,7 +20,6 @@ typedef struct Clan {
 int push(Pozicija);
 int popStog(Pozicija);
 int popRed(Pozicija);
-int createPamtilo();
 int nasumicni(Pozicija);
 int ispis(Pozicija);
 
