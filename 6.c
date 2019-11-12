@@ -60,7 +60,7 @@ int push(Pozicija p) {
 	return 0;
 }
 
-int popStog(Pozicija p) {
+int popRed(Pozicija p) {
 
 	Pozicija head = p;
 	if (p->next == NULL) {
@@ -76,7 +76,7 @@ int popStog(Pozicija p) {
 	return 0;
 }
 
-int popRed(Pozicija p) {
+int popStog(Pozicija p) {
 
 	Pozicija head = p;
 	if (head->next == NULL) {
