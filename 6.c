@@ -49,6 +49,7 @@ int nasumicni(Pozicija p) {
 int push(Pozicija p) {
 
 	int i = 0;
+	
 	Pozicija head = p;
 	Pozicija q = NULL;
 	q = (Pozicija)malloc(sizeof(clan));
