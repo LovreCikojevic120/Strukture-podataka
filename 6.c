@@ -26,6 +26,7 @@ int ispis(Pozicija);
 int main() {
 
 	int select = 0;
+	srand((unsigned)time(0));
 	clan Head;
 	Head.next = NULL;
 	do {
@@ -41,7 +42,6 @@ int main() {
 
 int nasumicni(Pozicija p) {
 
-	srand((unsigned)time(0));
 	p->el = rand() % 91 + 10;
 	return 0;
 }
