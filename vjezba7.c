@@ -1,4 +1,4 @@
-//Napisati program koji iz datoteke èita postfiks izraz i zatim korištenjem stoga raèuna rezultat.Stog je potrebno realizirati preko vezane liste.
+//Napisati program koji iz datoteke Äita postfiks izraz i zatim koriÅ¡tenjem stoga raÄuna rezultat.Stog je potrebno realizirati preko vezane liste.
 
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LENGTH 1024
@@ -19,8 +19,10 @@ typedef struct Clan {
 
 char* naziv(char*);
 int ispis(Pozicija);
+int pop(Pozicija);
+int push(Pozicija, int);
 int unos(char*, Pozicija);
-int racunaj(Pozicija);
+int racunaj(Pozicija, Pozicija);
 
 int main() {
 
@@ -30,20 +32,28 @@ int main() {
 	char* fileName = NULL;
 	fileName = naziv(fileName);
 	unos(fileName, &head);
-	racunaj(&stog);
-	ispis(head.next);
+	racunaj(&head, &stog);
+	ispis(stog.next);
 
 	return 0;
 }
 
 int pop(Pozicija p) {
 
-
+	Pozicija q = p->next;
+	int priv = p->next->el;
+	p->next = p->next->next;
+	free(q);
+	return priv;
 }
 
+
 int push(Pozicija p, int x) {
-	
+
 	Pozicija q = NULL;
+	printf("\n%d\n", x);
+	x-=48;
+	printf("\n%d\n", x);
 	while (p->next != NULL)p = p->next;
 	q = (Pozicija)malloc(sizeof(clan));
 	q->el = x;
@@ -53,14 +63,28 @@ int push(Pozicija p, int x) {
 }
 
 int racunaj(Pozicija p, Pozicija stog) {
-	
+
 	Pozicija head = p;
+	int a, b;
+
 	while (p->next != NULL) {
-		if(p->next->el >= '0' && p->next->el <= '9')push(stog, p->next->el);
-		if (p->next->el == '*' || p->next->el == '+') {
-			pop(stog, p->next->el);
-		}
-	}
+        if(p->next->el >= '0' && p->next->el <= '9') push(stog, p->next->el);
+        else{ switch(p->next->el){
+                case '*' :
+                    a = pop(head);
+                    b = pop(head);
+                    push(stog, a*b);
+                    break;
+                case '+' :
+                    a = pop(head);
+                    b = pop(head);
+                    push(stog, a+b);
+                    break;
+                }
+        }
+                p = p->next;
+            }
+
 	return 0;
 }
 
@@ -97,9 +121,10 @@ int unos(char* fileName, Pozicija p) {
 int ispis(Pozicija head) {
 
 	while (head->next != NULL) {
-		printf("%c", head->el);
+		printf("%d ", head->el);
 		head = head->next;
 	}
 
 	return 0;
 }
+
