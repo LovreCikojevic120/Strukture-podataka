@@ -33,30 +33,40 @@ int main() {
 	fileName = naziv(fileName);
 	unos(fileName, &head);
 	racunaj(&head, &stog);
-	ispis(stog.next);
+	printf("%d", head.next->el);
+	//ispis(stog.next);
 
 	return 0;
 }
 
 int pop(Pozicija p) {
 
-	Pozicija q = p->next;
-	int priv = p->next->el;
+	int priv = 0;
+	Pozicija q = NULL;
+	q = p->next;
+	priv = p->next->el;
 	p->next = p->next->next;
 	free(q);
-	return priv;
+	return priv - 48;
 }
 
+int pushStog(Pozicija p, int x) {
+	
+	Pozicija q = NULL;
+	q = (Pozicija)malloc(sizeof(clan));
+	q->el = x;
+	q->next = p->next;
+	p->next = q;
+	return 0;
+}
 
 int push(Pozicija p, int x) {
 
 	Pozicija q = NULL;
-	printf("\n%d\n", x);
-	x-=48;
-	printf("\n%d\n", x);
 	while (p->next != NULL)p = p->next;
 	q = (Pozicija)malloc(sizeof(clan));
 	q->el = x;
+	//printf("%d", q->el);
 	q->next = p->next;
 	p->next = q;
 	return 0;
@@ -68,23 +78,25 @@ int racunaj(Pozicija p, Pozicija stog) {
 	int a, b;
 
 	while (p->next != NULL) {
-        if(p->next->el >= '0' && p->next->el <= '9') push(stog, p->next->el);
-        else{ switch(p->next->el){
-                case '*' :
-                    a = pop(head);
-                    b = pop(head);
-                    push(stog, a*b);
-                    break;
-                case '+' :
-                    a = pop(head);
-                    b = pop(head);
-                    push(stog, a+b);
-                    break;
-                }
-        }
-                p = p->next;
-            }
-
+		while(p->next->el >= '0' && p->next->el <= '9') p = p->next;
+			
+		switch (p->next->el) {
+			case '*':
+				a = pop(head);
+				b = pop(head);
+				pop(head);
+				pushStog(head, a * b);
+				break;
+			case '+':
+				a = pop(head);
+				b = pop(head);
+				pop(head);
+				pushStog(head, a + b);
+				break;
+		}
+		if (head->next->next != NULL)p = p->next;
+		else break;
+	}
 	return 0;
 }
 
@@ -119,12 +131,7 @@ int unos(char* fileName, Pozicija p) {
 }
 
 int ispis(Pozicija head) {
-
-	while (head->next != NULL) {
-		printf("%d ", head->el);
-		head = head->next;
-	}
-
+	if(head == NULL)printf("kurac");
+	printf("%d ", head->el);
 	return 0;
 }
-
