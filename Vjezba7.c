@@ -49,11 +49,21 @@ int pop(Pozicija p) {
 
 	int priv = 0;
 	Pozicija q = NULL;
-	q = p->next;
-	priv = p->next->el;
-	p->next = p->next->next;
-	free(q);
-	return priv;
+	while (p->next->next != NULL)p = p->next;
+	if (p->next->next == NULL) {
+		q = p->next;
+		priv = p->next->el;
+		p->next = NULL;
+		free(q);
+		return priv;
+	}
+	else if (p->next == NULL) {
+		q = p->next;
+		priv = p->next->el;
+		p->next = NULL;
+		free(q);
+		return priv;
+	}
 }
 
 int push(Pozicija p, int x) {
