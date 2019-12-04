@@ -11,7 +11,6 @@
 
 typedef struct Clan* Pozicija;
 
-
 typedef struct Clan {
 
 	int el;
@@ -20,20 +19,19 @@ typedef struct Clan {
 
 char* naziv(char*);
 int ispis(Pozicija);
-//int unos(char*, Pozicija);
-int sort(char*, Pozicija);
-int Brisi(Pozicija);
 int pop(Pozicija);
-int push(int, Pozicija);
+int push(Pozicija, int);
+int racunaj(Pozicija, char*);
 
 int main() {
-	
-	clan head;
-	head.next = NULL;
+
+	clan stog;
+	stog.next = NULL;
 	char* fileName = NULL;
 	fileName = naziv(fileName);
-	sort(fileName, &head);
-	ispis(head.next);
+	racunaj(&stog, fileName);
+	printf("%d", stog.next->el);
+	//ispis(stog.next);
 
 	return 0;
 }
@@ -47,72 +45,48 @@ char* naziv(char* fileName) {
 	return fileName;
 }
 
-int ispis(Pozicija head) {
+int pop(Pozicija p) {
 
-	while (head->next != NULL) {
-		printf("%c", head->el);
-		head = head->next;
-	}
-
-	return 0;
+	int priv = 0;
+	Pozicija q = NULL;
+	q = p->next;
+	priv = p->next->el;
+	p->next = p->next->next;
+	free(q);
+	return priv;
 }
 
-int sort(char* fileName, Pozicija head) {
+int push(Pozicija p, int x) {
 
-	Pozicija p = head, q=NULL;
-	FILE* f = NULL;
-	char z = 0, r = 0;
-	f = fopen(fileName, "r");
-	p = p->next;
-
-	while (!feof(f)) {
-
-		fscanf(f, " %c", &r);
-		p = (Pozicija)malloc(sizeof(clan));
-		if (r >= '0' && r <= '9') {
-			z = (int)r;
-			push(z, head);
-		}
-		else {
-			int x = pop(p), y = pop(p);
-			switch (z) {
-			case'+': push(y + x, head); break;
-			case'-': push(y - x, head); break;
-			case'*': push(y * x, head); break;
-			case'/': push(y / x, head); break;
-			}
-		}
-		p = p->next;
-	}
-	return 0;
-}
-
-int push(int x, Pozicija head) {
-	Pozicija p = head->next, q = NULL;
-	while (p != NULL)
-		p = p->next;
+	Pozicija q = NULL;
+	while (p->next != NULL)p = p->next;
 	q = (Pozicija)malloc(sizeof(clan));
-	q = q->next;
 	q->el = x;
 	q->next = p->next;
 	p->next = q;
-
 	return 0;
 }
 
-int pop(Pozicija head) {
-	int x;
-	Pozicija p = head;
-	x = p->next->el;
-	Brisi(p);
-	return x;
-}
+int racunaj(Pozicija p, char* filename) {
 
-int Brisi(Pozicija head) {
-	Pozicija priv, p = head;
-	priv = p->next;
-	p->next = p->next->next;
-	free(priv);
+	FILE* f;
+	int x, a, b;
+	char postfix[20];
+	f = fopen(filename, "r");
+	while (!feof(f)) {
 
-	return 0;
+		fscanf(f, "%s", postfix);
+		if (postfix[0] >= '0' && postfix[0] <= '9') {
+			x = atoi(postfix);
+			push(p, x);
+		}
+		else {
+			a = pop(p);
+			b = pop(p);
+			switch (postfix[0]) {
+			case '+':push(p, a + b); break;
+			case '*':push(p, a * b); break;
+			}
+		}
+	}
 }
