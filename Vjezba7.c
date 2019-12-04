@@ -1,4 +1,4 @@
-//Napisati program koji iz datoteke Ëita postfiks izraz i zatim koriötenjem stoga raËuna rezultat.Stog je potrebno realizirati preko vezane liste.
+//Napisati program koji iz datoteke √®ita postfiks izraz i zatim kori≈°tenjem stoga ra√®una rezultat.Stog je potrebno realizirati preko vezane liste.
 
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LENGTH 1024
