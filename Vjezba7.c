@@ -1,4 +1,4 @@
-//Napisati program koji iz datoteke èita postfiks izraz i zatim korištenjem stoga raèuna rezultat.Stog je potrebno realizirati preko vezane liste.
+//Napisati program koji iz datoteke čita postfiks izraz i zatim korištenjem stoga računa rezultat.Stog je potrebno realizirati preko vezane liste.
 
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LENGTH 1024
@@ -26,10 +26,10 @@ int racunaj(Pozicija, char*);
 int main() {
 
 	clan stog;
+	char* filename;
 	stog.next = NULL;
-	char* fileName = NULL;
-	fileName = naziv(fileName);
-	racunaj(&stog, fileName);
+	filename = naziv(filename);
+	racunaj(&stog, filename);
 	printf("%d", stog.next->el);
 	//ispis(stog.next);
 
@@ -96,6 +96,12 @@ int racunaj(Pozicija p, char* filename) {
 			switch (postfix[0]) {
 			case '+':push(p, a + b); break;
 			case '*':push(p, a * b); break;
+			case '-':push(p, a - b); break;
+			case '/':if(NULL == a){
+						printf("\ndijeljenje s nulom\n");
+						return 0;
+					 }
+					 push(p, (float)(a / b)); break;
 			}
 		}
 	}
