@@ -1,0 +1,94 @@
+//Napisati program koji omogućava rad s binarnim stablom pretraživanja. Treba unošenje novog elementa u stablo, ispis elemenata, brisanje i pronalaženje nekog elementa.
+
+#define _CRT_SECURE_NO_WARNINGS
+#define MAX_LENGTH 1024
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+
+
+typedef struct Clan* Pozicija;
+
+typedef struct Clan {
+
+	int el;
+	Pozicija l;
+	Pozicija r;
+}clan;
+
+int prvi(Pozicija);
+int racunaj(Pozicija, int);
+Pozicija unos(int);
+int ispis(Pozicija);
+
+int main() {
+
+	clan stablo;
+	int i = 0;
+	stablo.l = NULL;
+	stablo.r = NULL;
+	for(i=0;i<3;i++)
+	smislitImeKasnije(&stablo);
+	ispis(stablo.l);
+
+	return 0;
+}
+
+int smislitImeKasnije(Pozicija p){
+	Pozicija q = NULL;
+	int x = NULL;
+	if(p->l == NULL && p->r == NULL){
+	printf("\nunesi root:\t");
+	scanf("%d", &x);
+	q = unos(x);
+	p->l = q;
+	}
+	else racunaj(p, x);
+
+}
+
+int racunaj(Pozicija p, int x){
+	Pozicija q = NULL;
+
+	if(q->el >= p->el){
+		if(p->r == NULL){
+			q = unos(x);
+			p->r =q;
+		}
+
+		else racunaj(p->r, x);
+	}
+
+	else if(q->el < p->el){
+		if(p->l == NULL){
+			q = unos(x);
+			p->l =q;
+		}
+		else racunaj(p->l, x);
+	}
+
+	return 0;
+}
+
+Pozicija unos(int x){
+	Pozicija q = NULL;
+	q = (Pozicija)malloc(sizeof(clan));
+	q->el = x;
+	return q;
+}
+
+int ispis(Pozicija p){
+	int i;
+
+	if(p->l != NULL)
+		printf("%d", p->l->el);
+	else if(p->r != NULL){
+		for(i=0;i<2;i++) printf("\n");
+		printf("%d", p->r->el);
+	}
+	else return 0;
+	ispis(p->l);
+	ispis(p->r);
+}
