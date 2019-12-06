@@ -97,7 +97,7 @@ int racunaj(Pozicija p, char* filename) {
 			case '+':push(p, a + b); break;
 			case '*':push(p, a * b); break;
 			case '-':push(p, a - b); break;
-			case '/':if(NULL == a){
+			case '/':	if(NULL == a){
 						printf("\ndijeljenje s nulom\n");
 						return 0;
 					 }
