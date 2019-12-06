@@ -31,7 +31,6 @@ int main() {
 	filename = naziv(filename);
 	racunaj(&stog, filename);
 	printf("%d", stog.next->el);
-	//ispis(stog.next);
 
 	return 0;
 }
