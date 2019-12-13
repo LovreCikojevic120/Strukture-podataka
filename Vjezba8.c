@@ -1,6 +1,6 @@
-/*  Napisati program koji pomoæu vezanih listi (stabala) predstavlja strukturu direktorija.
-Omoguæiti unos novih direktorija i pod-direktorija, ispis sadržaja direktorija i
-povratak u prethodni direktorij. Toènije program treba preko menija simulirati
+/*  Napisati program koji pomoću vezanih listi (stabala) predstavlja strukturu direktorija.
+Omogućiti unos novih direktorija i pod-direktorija, ispis sadržaja direktorija i
+povratak u prethodni direktorij. Točnije program treba preko menija simulirati
 korištenje DOS naredbi: 1- "md", 2 - "cd dir", 3 - "cd..", 4 - "dir" i 5 – izlaz.   */
 
 
@@ -34,7 +34,7 @@ Pozicija pomak(Pozicija, PozicijaStog);
 int IspisStoga(PozicijaStog);
 Pozicija pop(PozicijaStog);
 int push(PozicijaStog, Pozicija);
-Pozicija vratise(PozicijaStog);
+Pozicija vratiSe(PozicijaStog);
 
 int main() {
 
@@ -42,46 +42,48 @@ int main() {
 	char imedirektorija[10];
 	Pozicija trenutni = &stablo;
 	stog stog;
-	int i = 0, izbor = 0;
+	int i = 0;
+	char izbor[20];
 	stablo.child = NULL;
 	stablo.next = NULL;
 	stablo.root = 1;
-	printf("unesi ime roota: ");
+	printf("Unesi ime roota: ");
 	scanf(" %s", stablo.ime);
 	stog.next = NULL;
 	push(&stog, &stablo);
 
 	while (1) {
 
-		printf("\n1-unos\t2-prijelaz u poddirektorij\t3-ispis poddir.\t4-vrati se\t5-izlaz\n");
-		scanf(" %c", &izbor);
+		printf("\n\nmd-unos\t   cd-prijelaz u poddirektorij\t  dir-ispis poddirektorija\t  cd..-vrati se\t\texit-izlaz\n\n");
+		IspisStoga(stog.next);
+		scanf(" %s", &izbor);
 
-		switch (izbor) {
-		case '1':
+		if(!strcmp(izbor, "md"))
 			unos(trenutni);
-			break;
 
-		case '2':
+		else if(!strcmp(izbor, "cd")){
 			trenutni = pomak(trenutni, &stog);
 			IspisStoga(stog.next);
-			break;
-
-		case '3':
-			ispisPoddir(trenutni); break;
-		
-		case '4':
-			trenutni = vratise(&stog);
-			IspisStoga(stog.next); 
-			break;
-
-		case '5':
-			return 0;
 		}
-	}
+
+		else if(!strcmp(izbor, "dir"))
+			ispisPoddir(trenutni);
+
+		else if(!strcmp(izbor, "cd..")){
+			trenutni = vratiSe(&stog);
+			IspisStoga(stog.next);
+		}
+
+		else if(!strcmp(izbor, "exit"))
+			return 0;
+
+        else puts("Pogresan unos.");
+		}
+
 	return 0;
 }
 
-Pozicija vratise(PozicijaStog s) {
+Pozicija vratiSe(PozicijaStog s) {
 
 	Pozicija p = pop(s);
 	return p;
@@ -89,7 +91,7 @@ Pozicija vratise(PozicijaStog s) {
 
 int ispisPoddir(Pozicija p) {
 
-	puts("poddirektoriji:");
+	puts("Poddirektoriji:");
 	p = p->child;
 	printf("%s\n", p->ime);
 	p = p->next;
@@ -98,13 +100,14 @@ int ispisPoddir(Pozicija p) {
 		printf("%s\n", p->ime);
 		p = p->next;
 	}
+	return 0;
 }
 
 int unos(Pozicija p) {
 	Pozicija q = NULL;
 	int i = 0;
 	char naziv[20];
-	printf("\nunesi naziv novog direktorija\n");
+	//printf("\nunesi naziv novog direktorija\n");
 	scanf("%s", naziv);
 	q = (Pozicija)malloc(sizeof(clan));
 	strcpy(q->ime, naziv);
@@ -131,7 +134,7 @@ Pozicija pomak(Pozicija p, PozicijaStog stog) {
 	Pozicija stablo = p;
 	char imedirektorija[20];
 
-	puts("napisi ime direktorija u kojeg zelis uc");
+	//puts("napisi ime direktorija u kojeg zelis uc");
 	scanf("%s", imedirektorija);
 
 
@@ -162,7 +165,7 @@ int push(PozicijaStog p, Pozicija x) {
 
 Pozicija pop(PozicijaStog p) {
 
-	Pozicija priv = NULL;
+	PozicijaStog priv = p;
 	PozicijaStog q = NULL;
 	while (p->next->next != NULL)p = p->next;
 	//if (p->next->next == NULL) {
@@ -174,16 +177,9 @@ Pozicija pop(PozicijaStog p) {
 		return priv;
 	}
 	else {
-		puts("na rootu si debilu >:(");
-		return p;
+		puts("Nalazite se na root-u.");
+		return priv->adresa;
 	}
-	/*else if (p->next == NULL) {
-		q = p->next;
-		priv = p->adresa;
-		p->next = NULL;
-		free(q);
-		return priv;
-	}*/
 }
 
 int IspisStoga(PozicijaStog p) {
