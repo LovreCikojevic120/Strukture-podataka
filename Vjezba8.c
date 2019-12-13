@@ -34,6 +34,7 @@ Pozicija pomak(Pozicija, PozicijaStog);
 int IspisStoga(PozicijaStog);
 Pozicija pop(PozicijaStog);
 int push(PozicijaStog, Pozicija);
+Pozicija vratise(PozicijaStog);
 
 int main() {
 
@@ -45,31 +46,61 @@ int main() {
 	stablo.child = NULL;
 	stablo.next = NULL;
 	stablo.root = 1;
-	printf("unesi ime roota:\t");
+	printf("unesi ime roota: ");
 	scanf(" %s", stablo.ime);
 	stog.next = NULL;
 	push(&stog, &stablo);
 
-	while(1){
+	while (1) {
 
-    printf("\n1-unos\t2-prijelaz u poddirektorij\n");
-	scanf(" %c", &izbor);
+		printf("\n1-unos\t2-prijelaz u poddirektorij\t3-ispis poddir.\t4-vrati se\t5-izlaz\n");
+		scanf(" %c", &izbor);
 
-	switch(izbor){
-    case '1':
-        unos(&stablo);
-        break;
+		switch (izbor) {
+		case '1':
+			unos(trenutni);
+			break;
 
-    case '2':
-		trenutni = pomak(&stablo, &stog);
-		IspisStoga(stog.next);
-        break;
-	}
+		case '2':
+			trenutni = pomak(trenutni, &stog);
+			IspisStoga(stog.next);
+			break;
+
+		case '3':
+			ispisPoddir(trenutni); break;
+		
+		case '4':
+			trenutni = vratise(&stog);
+			IspisStoga(stog.next); 
+			break;
+
+		case '5':
+			return 0;
+		}
 	}
 	return 0;
 }
 
-int unos(Pozicija p){
+Pozicija vratise(PozicijaStog s) {
+
+	Pozicija p = pop(s);
+	return p;
+}
+
+int ispisPoddir(Pozicija p) {
+
+	puts("poddirektoriji:");
+	p = p->child;
+	printf("%s\n", p->ime);
+	p = p->next;
+
+	while (p != NULL) {
+		printf("%s\n", p->ime);
+		p = p->next;
+	}
+}
+
+int unos(Pozicija p) {
 	Pozicija q = NULL;
 	int i = 0;
 	char naziv[20];
@@ -77,52 +108,44 @@ int unos(Pozicija p){
 	scanf("%s", naziv);
 	q = (Pozicija)malloc(sizeof(clan));
 	strcpy(q->ime, naziv);
-	if(p->child == NULL){
-	p->child = q;
-	q->next = NULL;
-	q->root = 0;
-	q->child = NULL;
+	if (p->child == NULL) {
+		p->child = q;
+		q->next = NULL;
+		q->root = 0;
+		q->child = NULL;
 	}
-	else{
-        p = p->child;
+	else {
+		p = p->child;
 
-		while(p->next != NULL)  p = p->next;
-			q->next = p->next;
-			p->next = q;
-			q->child = NULL;
-			q->root = 0;
+		while (p->next != NULL)  p = p->next;
+		q->next = p->next;
+		p->next = q;
+		q->child = NULL;
+		q->root = 0;
 	}
 
 	return 0;
 }
 
-Pozicija pomak(Pozicija p, PozicijaStog stog){
+Pozicija pomak(Pozicija p, PozicijaStog stog) {
 	Pozicija stablo = p;
 	char imedirektorija[20];
 
-	puts("poddirektoriji:");
-        p = p->child;
-
-		while(p != NULL){
-			printf("%s\n", p->ime);
-            p = p->next;
-        }
-
-        puts("napisi ime direktorija u kojeg zelis uc");
-        scanf("%s", imedirektorija);
+	puts("napisi ime direktorija u kojeg zelis uc");
+	scanf("%s", imedirektorija);
 
 
-        p = stablo;
-		p = p->child;
-        while(p != NULL){
-        if(!strcmp(imedirektorija, p->ime)){
+	p = stablo;
+	p = p->child;
+	while (p != NULL) {
+		if (!strcmp(imedirektorija, p->ime)) {
 			//stablo = p;
 			push(stog, p);
-			return stablo;
+			return stablo->child;
 		}
 
-        else p = p->next;
-        }
+		else p = p->next;
+	}
 
 }
 
@@ -142,26 +165,33 @@ Pozicija pop(PozicijaStog p) {
 	Pozicija priv = NULL;
 	PozicijaStog q = NULL;
 	while (p->next->next != NULL)p = p->next;
-	if (p->next->next == NULL) {
+	//if (p->next->next == NULL) {
+	if(p->next->adresa->root != 1){
 		q = p->next;
-		priv = p->next->adresa;
+		priv = p->adresa;
 		p->next = NULL;
 		free(q);
 		return priv;
 	}
-	else if (p->next == NULL) {
+	else {
+		puts("na rootu si debilu >:(");
+		return p;
+	}
+	/*else if (p->next == NULL) {
 		q = p->next;
-		priv = p->next->adresa;
+		priv = p->adresa;
 		p->next = NULL;
 		free(q);
 		return priv;
-	}
+	}*/
 }
 
-int IspisStoga(PozicijaStog p){
+int IspisStoga(PozicijaStog p) {
 
-	while(p != NULL){
-		printf("%s :\\" , p->adresa->ime);
+	while (p != NULL) {
+		if(p->adresa->root) printf("%s", p->adresa->ime);
+		else printf(" :\\ %s", p->adresa->ime);
 		p = p->next;
 	}
+	printf(">");
 }
