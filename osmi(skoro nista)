@@ -26,21 +26,29 @@ typedef struct Clan {
 
 typedef struct Stog {
 	Pozicija adresa;
-	Pozicija next;
+	PozicijaStog next;
 }stog;
 
 int unos(Pozicija);
+Pozicija pomak(Pozicija, PozicijaStog);
+int IspisStoga(PozicijaStog);
+Pozicija pop(PozicijaStog);
+int push(PozicijaStog, Pozicija);
 
 int main() {
 
 	clan stablo, priv;
 	char imedirektorija[10];
-	int i = 0, izbor = 0, vrti = 0;
+	Pozicija trenutni = &stablo;
+	stog stog;
+	int i = 0, izbor = 0;
 	stablo.child = NULL;
 	stablo.next = NULL;
 	stablo.root = 1;
 	printf("unesi ime roota:\t");
 	scanf(" %s", stablo.ime);
+	stog.next = NULL;
+	push(&stog, &stablo);
 
 	while(1){
 
@@ -53,24 +61,8 @@ int main() {
         break;
 
     case '2':
-        vrti = 0;
-        puts("poddirektoriji:");
-        stablo = *stablo.child;
-        priv = stablo;
-
-        while(stablo.next != NULL){
-            printf("%s\n", stablo.ime);
-            stablo = *stablo.next;
-        }
-        puts("napisi ime direktorija u kojeg zelis uc");
-        scanf("%s", imedirektorija);
-
-
-        stablo = priv;
-        while(stablo.next != NULL){
-        if(strcmp(imedirektorija, stablo.ime)) stablo = *stablo.next;
-        else stablo = *stablo.next;
-        }
+		trenutni = pomak(&stablo, &stog);
+		IspisStoga(stog.next);
         break;
 	}
 	}
@@ -89,16 +81,87 @@ int unos(Pozicija p){
 	p->child = q;
 	q->next = NULL;
 	q->root = 0;
+	q->child = NULL;
 	}
 	else{
         p = p->child;
 
-        while(p->next != NULL)  p = p->next;
-        q->next = NULL;
-        p->next = q;
-        q->child = NULL;
-        q->root = 0;
+		while(p->next != NULL)  p = p->next;
+			q->next = p->next;
+			p->next = q;
+			q->child = NULL;
+			q->root = 0;
 	}
 
 	return 0;
+}
+
+Pozicija pomak(Pozicija p, PozicijaStog stog){
+	Pozicija stablo = p;
+	char imedirektorija[20];
+
+	puts("poddirektoriji:");
+        p = p->child;
+
+		while(p != NULL){
+			printf("%s\n", p->ime);
+            p = p->next;
+        }
+
+        puts("napisi ime direktorija u kojeg zelis uc");
+        scanf("%s", imedirektorija);
+
+
+        p = stablo;
+		p = p->child;
+        while(p != NULL){
+        if(!strcmp(imedirektorija, p->ime)){
+			//stablo = p;
+			push(stog, p);
+			return stablo;
+		}
+
+        else p = p->next;
+        }
+
+}
+
+int push(PozicijaStog p, Pozicija x) {
+
+	PozicijaStog q = NULL;
+	while (p->next != NULL) p = p->next;
+	q = (PozicijaStog)malloc(sizeof(stog));
+	q->adresa = x;
+	q->next = p->next;
+	p->next = q;
+	return 0;
+}
+
+Pozicija pop(PozicijaStog p) {
+
+	Pozicija priv = NULL;
+	PozicijaStog q = NULL;
+	while (p->next->next != NULL)p = p->next;
+	if (p->next->next == NULL) {
+		q = p->next;
+		priv = p->next->adresa;
+		p->next = NULL;
+		free(q);
+		return priv;
+	}
+	else if (p->next == NULL) {
+		q = p->next;
+		priv = p->next->adresa;
+		p->next = NULL;
+		free(q);
+		return priv;
+	}
+}
+
+int IspisStoga(PozicijaStog p){
+
+	while(p != NULL){
+		printf("%s :\\" , p->adresa->ime);
+		p = p->next;
+	}
 }
