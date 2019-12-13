@@ -1,0 +1,104 @@
+/*  Napisati program koji pomoæu vezanih listi (stabala) predstavlja strukturu direktorija.
+Omoguæiti unos novih direktorija i pod-direktorija, ispis sadržaja direktorija i
+povratak u prethodni direktorij. Toènije program treba preko menija simulirati
+korištenje DOS naredbi: 1- "md", 2 - "cd dir", 3 - "cd..", 4 - "dir" i 5 – izlaz.   */
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#define MAX_LENGTH 1024
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+
+
+typedef struct Clan* Pozicija;
+typedef struct Stog* PozicijaStog;
+
+typedef struct Clan {
+
+	char ime[20];
+	int root;
+	Pozicija next;
+	Pozicija child;
+}clan;
+
+typedef struct Stog {
+	Pozicija adresa;
+	Pozicija next;
+}stog;
+
+int unos(Pozicija);
+
+int main() {
+
+	clan stablo, priv;
+	char imedirektorija[10];
+	int i = 0, izbor = 0, vrti = 0;
+	stablo.child = NULL;
+	stablo.next = NULL;
+	stablo.root = 1;
+	printf("unesi ime roota:\t");
+	scanf(" %s", stablo.ime);
+
+	while(1){
+
+    printf("\n1-unos\t2-prijelaz u poddirektorij\n");
+	scanf(" %c", &izbor);
+
+	switch(izbor){
+    case '1':
+        unos(&stablo);
+        break;
+
+    case '2':
+        vrti = 0;
+        puts("poddirektoriji:");
+        stablo = *stablo.child;
+        priv = stablo;
+
+        while(stablo.next != NULL){
+            printf("%s\n", stablo.ime);
+            stablo = *stablo.next;
+        }
+        puts("napisi ime direktorija u kojeg zelis uc");
+        scanf("%s", imedirektorija);
+
+
+        stablo = priv;
+        while(stablo.next != NULL){
+        if(strcmp(imedirektorija, stablo.ime)) stablo = *stablo.next;
+        else stablo = *stablo.next;
+        }
+        break;
+	}
+	}
+	return 0;
+}
+
+int unos(Pozicija p){
+	Pozicija q = NULL;
+	int i = 0;
+	char naziv[20];
+	printf("\nunesi naziv novog direktorija\n");
+	scanf("%s", naziv);
+	q = (Pozicija)malloc(sizeof(clan));
+	strcpy(q->ime, naziv);
+	if(p->child == NULL){
+	p->child = q;
+	q->next = NULL;
+	q->root = 0;
+	}
+	else{
+        p = p->child;
+
+        while(p->next != NULL)  p = p->next;
+        q->next = NULL;
+        p->next = q;
+        q->child = NULL;
+        q->root = 0;
+	}
+
+	return 0;
+}
