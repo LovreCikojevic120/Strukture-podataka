@@ -144,7 +144,7 @@ Pozicija pomak(Pozicija p, PozicijaStog stog) {
 		if (!strcmp(imedirektorija, p->ime)) {
 			//stablo = p;
 			push(stog, p);
-			return stablo->child;
+			return p;
 		}
 
 		else p = p->next;
@@ -178,7 +178,7 @@ Pozicija pop(PozicijaStog p) {
 	}
 	else {
 		puts("Nalazite se na root-u.");
-		return priv->adresa;
+		return p->next->adresa;
 	}
 }
 
