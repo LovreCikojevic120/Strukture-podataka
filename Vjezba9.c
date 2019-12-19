@@ -10,7 +10,6 @@
 typedef struct Clan* Pozicija;
 
 typedef struct Clan {
-
 	int el;
 	Pozicija l;
 	Pozicija r;
@@ -19,25 +18,27 @@ typedef struct Clan {
 int IspisPostfix(Pozicija);
 int IspisPrefix(Pozicija);
 int IspisInfix(Pozicija);
-Pozicija unos(Pozicija, int);
-Pozicija trazi(Pozicija, int);
-Pozicija brisi(Pozicija, int);
+Pozicija Unos(Pozicija, int);
+Pozicija Trazi(Pozicija, Pozicija, int);
+Pozicija Brisi(Pozicija, int);
 
 int main() {
 
-	Pozicija stablo = NULL; //= (Pozicija)malloc(sizeof(clan));
-	char izbor;
-	int el = 0;
+	Pozicija stablo = NULL;
+	char izbor = NULL;
+	int el = NULL;
+
 	while (1) {
 
 		printf("\n1-unos\t2-infix ispis\t3-postfix ispis\t4-prefix ispis\t5-brisi\t6-trazi\t7-kraj\n");
 		scanf(" %c", &izbor);
 
 		switch (izbor) {
+
 		case '1':
-			printf("unesi broj\n");
+			printf("Unesi broj:\n");
 			scanf("%d", &el);
-			stablo = unos(stablo, el);
+			stablo = Unos(stablo, el);
 			break;
 
 		case '2':
@@ -53,35 +54,36 @@ int main() {
 			break;
 
 		case '5':
-			printf("unesi broj koi zelis izbrisat\n");
+			printf("Unesi broj koji zelis izbrisati:\n");
 			scanf("%d", &el);
-			stablo = brisi(stablo, el);
+			stablo = Brisi(stablo, el);
 			break;
 
 		case '6':
-			printf("unesi broj koi zelis nac\n");
+			printf("Unesi broj koji zelis pronaci:\n");
 			scanf("%d", &el);
-			trazi(stablo, stablo, el);
+			Trazi(stablo, stablo, el);
 			break;
 
 		case '7':
 			return 0;
 		}
 	}
-
 	return 0;
 }
 
-Pozicija brisi(Pozicija p, int el) {
+Pozicija Brisi(Pozicija p, int el) {
 
-	Pozicija priv, q = NULL;
+	Pozicija priv = NULL, q = NULL;
+
 	if (p == NULL)return p;
-	if (el < p->el)
-	p->l = brisi(p->l, el);
-	else if (el > p->el)
-	p->r = brisi(p->r, el);
-	else {
 
+	if (el < p->el)
+        p->l = Brisi(p->l, el);
+	else if (el > p->el)
+        p->r = Brisi(p->r, el);
+
+	else {
 		if (p->l != NULL && p->r != NULL) {
 			priv = p;
 			p = p->l;
@@ -89,12 +91,9 @@ Pozicija brisi(Pozicija p, int el) {
 			q = p;
 			p = priv;
 			p->el = q->el;
-			p->l = brisi(p->l, q->el);
-
-
+			p->l = Brisi(p->l, q->el);
 		}
 		else {
-			puts("dosa");
 			q = p;
 			if (p->l == NULL)p = p->r;
 			else p = p->l;
@@ -104,26 +103,26 @@ Pozicija brisi(Pozicija p, int el) {
 	return p;
 }
 
-Pozicija trazi(Pozicija p, Pozicija roditelj, int el) {
+Pozicija Trazi(Pozicija p, Pozicija roditelj, int el) {
 
 	if (p == NULL) {
-		printf("NEMA GA\n");
+		printf("Nema ga!\n");
 		return p;
 	}
 
 	if (p->el < el) {
 		roditelj = p;
-		return trazi(p->r, roditelj, el);
+		return Trazi(p->r, roditelj, el);
 	}
 	else if (p->el > el) {
 		roditelj = p;
-		return trazi(p->l, roditelj, el);
+		return Trazi(p->l, roditelj, el);
 	}
 
 	else{
-		printf("naden je element %d, njegov roditelj je %d", el, roditelj->el);
-		if (p->l != NULL) printf("\nnjegovo lijevo dijete je %d", p->l->el);
-		if (p->r != NULL) printf("\nnjegovo desno dijete je %d", p->r->el);
+		printf("Pronaden je element %d, njegov roditelj je %d", el, roditelj->el);
+		if (p->l != NULL) printf("\nNjegovo lijevo dijete je %d", p->l->el);
+		if (p->r != NULL) printf("\nNjegovo desno dijete je %d", p->r->el);
 		return p;
 	}
 
@@ -132,9 +131,9 @@ Pozicija trazi(Pozicija p, Pozicija roditelj, int el) {
 int IspisInfix(Pozicija p) {
 
 	if (p != NULL) {
-		IspisPostfix(p->l);
+		IspisInfix(p->l);
 		printf("%d   ", p->el);
-		IspisPostfix(p->r);
+		IspisInfix(p->r);
 	}
 }
 
@@ -142,8 +141,8 @@ int IspisPrefix(Pozicija p) {
 
 	if (p != NULL) {
 		printf("%d   ", p->el);
-		IspisPostfix(p->l);
-		IspisPostfix(p->r);
+		IspisPrefix(p->l);
+		IspisPrefix(p->r);
 	}
 }
 
@@ -156,7 +155,7 @@ int IspisPostfix(Pozicija p) {
 	}
 }
 
-Pozicija unos(Pozicija p, int el) {
+Pozicija Unos(Pozicija p, int el) {
 
 	if (p == NULL) {
 		p = (Pozicija)malloc(sizeof(clan));
@@ -165,14 +164,11 @@ Pozicija unos(Pozicija p, int el) {
 		p->r = NULL;
 	}
 
-	else if (el > p->el) p->r = unos(p->r, el);
-	
-	else if (el < p->el) p->l = unos(p->l, el);
+	else if (el > p->el) p->r = Unos(p->r, el);
 
-	else puts("clan postoi");
+	else if (el < p->el) p->l = Unos(p->l, el);
+
+	else printf("Clan vec postoji!\n");
 
 	return p;
-
 }
-
-
