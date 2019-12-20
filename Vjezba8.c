@@ -35,11 +35,12 @@ int IspisStoga(PozicijaStog);
 Pozicija pop(PozicijaStog);
 int push(PozicijaStog, Pozicija);
 Pozicija vratiSe(PozicijaStog);
+int ispisPoddir(Pozicija);
 
 int main() {
 
-	clan stablo, priv;
-	char imedirektorija[10];
+	clan stablo;
+	char imedirektorija[10] = {NULL};
 	Pozicija trenutni = &stablo;
 	stog stog;
 	int i = 0;
@@ -77,7 +78,7 @@ int main() {
 		else if(!strcmp(izbor, "exit"))
 			return 0;
 
-        else puts("Pogresan unos.");
+        else printf("Pogresan unos.\n");
 		}
 
 	return 0;
@@ -91,10 +92,10 @@ Pozicija vratiSe(PozicijaStog s) {
 
 int ispisPoddir(Pozicija p) {
 
-	puts("Poddirektoriji:");
+	printf("Poddirektoriji:\n");
 	p = p->child;
 	if(p == NULL){ 
-		puts("prazno");
+		printf("Direktorij je prazan.\n");
 		return 0;
 	}
 	printf("%s\n", p->ime);
@@ -110,9 +111,13 @@ int ispisPoddir(Pozicija p) {
 int unos(Pozicija p) {
 	Pozicija q = NULL;
 	int i = 0;
-	char naziv[20] = NULL;
+	char naziv[20] = {NULL};
 	scanf("%s", naziv);
 	q = (Pozicija)malloc(sizeof(clan));
+	if(q == NULL){
+		printf("Pogreska kod alokacije!\n");
+		return 0;
+	}
 	strcpy(q->ime, naziv);
 	if (p->child == NULL) {
 		p->child = q;
@@ -149,7 +154,6 @@ Pozicija pomak(Pozicija p, PozicijaStog stog) {
 		}
 
 		else p = p->next;
-	}
 
 }
 
@@ -158,6 +162,10 @@ int push(PozicijaStog p, Pozicija x) {
 	PozicijaStog q = NULL;
 	while (p->next != NULL) p = p->next;
 	q = (PozicijaStog)malloc(sizeof(stog));
+	if(q == NULL){
+		printf("Pogreska kod alokacije!\n");
+		return 0;
+	}
 	q->adresa = x;
 	q->next = p->next;
 	p->next = q;
@@ -171,13 +179,13 @@ Pozicija pop(PozicijaStog p) {
 	while (p->next->next != NULL)p = p->next;
 	if(p->next->adresa->root != 1){
 		q = p->next;
-		priv = p->adresa;
+		priv = p;
 		p->next = NULL;
 		free(q);
-		return priv;
+		return priv->adresa;
 	}
 	else {
-		puts("Nalazite se na root-u.");
+		printf("Nalazite se na root-u.\n");
 		return p->next->adresa;
 	}
 }
@@ -190,4 +198,6 @@ int IspisStoga(PozicijaStog p) {
 		p = p->next;
 	}
 	printf(">");
+
+	return 0;
 }
