@@ -78,11 +78,12 @@ Pozicija Brisi(Pozicija p, int el) {
 
 	if (p == NULL)return p;
 
-	if (el < p->el)
-        p->l = Brisi(p->l, el);
-	else if (el > p->el)
-        p->r = Brisi(p->r, el);
-
+	if (el < p->el){
+        	p->l = Brisi(p->l, el);
+	}
+	else if (el > p->el){
+        	p->r = Brisi(p->r, el);
+	}
 	else {
 		if (p->l != NULL && p->r != NULL) {
 			priv = p;
