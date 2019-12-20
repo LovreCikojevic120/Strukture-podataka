@@ -93,6 +93,10 @@ int ispisPoddir(Pozicija p) {
 
 	puts("Poddirektoriji:");
 	p = p->child;
+	if(p == NULL){ 
+		puts("prazno");
+		return 0;
+	}
 	printf("%s\n", p->ime);
 	p = p->next;
 
@@ -107,7 +111,6 @@ int unos(Pozicija p) {
 	Pozicija q = NULL;
 	int i = 0;
 	char naziv[20];
-	//printf("\nunesi naziv novog direktorija\n");
 	scanf("%s", naziv);
 	q = (Pozicija)malloc(sizeof(clan));
 	strcpy(q->ime, naziv);
@@ -134,7 +137,6 @@ Pozicija pomak(Pozicija p, PozicijaStog stog) {
 	Pozicija stablo = p;
 	char imedirektorija[20];
 
-	//puts("napisi ime direktorija u kojeg zelis uc");
 	scanf("%s", imedirektorija);
 
 
@@ -142,7 +144,6 @@ Pozicija pomak(Pozicija p, PozicijaStog stog) {
 	p = p->child;
 	while (p != NULL) {
 		if (!strcmp(imedirektorija, p->ime)) {
-			//stablo = p;
 			push(stog, p);
 			return p;
 		}
@@ -168,7 +169,6 @@ Pozicija pop(PozicijaStog p) {
 	PozicijaStog priv = p;
 	PozicijaStog q = NULL;
 	while (p->next->next != NULL)p = p->next;
-	//if (p->next->next == NULL) {
 	if(p->next->adresa->root != 1){
 		q = p->next;
 		priv = p->adresa;
