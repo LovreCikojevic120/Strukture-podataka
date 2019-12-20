@@ -110,7 +110,7 @@ int ispisPoddir(Pozicija p) {
 int unos(Pozicija p) {
 	Pozicija q = NULL;
 	int i = 0;
-	char naziv[20];
+	char naziv[20] = NULL;
 	scanf("%s", naziv);
 	q = (Pozicija)malloc(sizeof(clan));
 	strcpy(q->ime, naziv);
