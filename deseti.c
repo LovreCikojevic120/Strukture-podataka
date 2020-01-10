@@ -15,20 +15,19 @@ typedef struct Stablo {
 	int elSt;
 	PozicijaStablo r;
 	PozicijaStablo l;
+	Pozicija stog;
 
 }stablo;
 
 typedef struct Clan {
 
-	int el;
 	Pozicija next;
-	
 	
 }clan;
 
 char* naziv(char*);
 int ispis(Pozicija);
-int pop(Pozicija);
+int pop(PozicijaStablo);
 int push(Pozicija, int);
 int racunaj(Pozicija, char*);
 int IspisInfix(Pozicija, char*);
@@ -36,14 +35,26 @@ int IspisInfix(Pozicija, char*);
 int main() {
 
 	clan stog;
+	FILE* b = fopen("a.txt", "a");
 	char* filename = NULL;
 	stog.next = NULL;
 	filename = naziv(filename);
 	racunaj(&stog, filename);
-	fprintf(filename, "\n\n");
+	fprintf(b, "\n\n");
 	IspisInfix(&stog, filename);
 
 	return 0;
+}
+
+PozicijaStablo novoStablo(int x){
+
+	PozicijaStablo q = NULL;
+	q = (PozicijaStablo)malloc(sizeof(stablo));
+	q->elSt = x;
+	q->l = NULL;
+	q->r = NULL;
+	return q;
+
 }
 
 char* naziv(char* fileName) {
@@ -55,40 +66,41 @@ char* naziv(char* fileName) {
 	return fileName;
 }
 
-int pop(Pozicija p) {
+int pop(PozicijaStablo p) {
 	int priv = 0;
 	Pozicija q = NULL;
-	while (p->next->next != NULL)p = p->next;
-	if (p->next->next == NULL) {
-		q = p->next;
-		priv = p->next->el;
-		p->next = NULL;
+	while (p->stog->next->next != NULL)p->stog = p->stog->next;
+	if (p->stog->next->next == NULL) {
+		q = p->stog->next;
+		priv = p->elSt;
+		p->stog->next = NULL;
 		free(q);
 		return priv;
 	}
-	else if (p->next == NULL) {
-		q = p->next;
-		priv = p->next->el;
-		p->next = NULL;
+	else if (p->stog->next == NULL) {
+		q = p->stog->next;
+		priv = p->elSt;
+		p->stog->next = NULL;
 		free(q);
 		return priv;
 	}
 }
 
-int push(Pozicija p, int x) {
+int push(PozicijaStablo p) {
 
 	Pozicija q = NULL;
-	while (p->next != NULL)p = p->next;
+	while (p->stog->next != NULL)p->stog = p->stog->next;
 	q = (Pozicija)malloc(sizeof(clan));
-	q->el = x;
-	q->next = p->next;
-	p->next = q;
+	//q->el = x;
+	q->next = p->stog->next;
+	p->stog->next = q;
 	return 0;
 }
 
 int racunaj(Pozicija p, char* filename) {
 
 	FILE* f;
+	PozicijaStablo tmp = NULL;
 	int x, a, b;
 	char postfix[20];
 	f = fopen(filename, "r");
@@ -97,36 +109,28 @@ int racunaj(Pozicija p, char* filename) {
 		fscanf(f, "%s", postfix);
 		if (postfix[0] >= '0' && postfix[0] <= '9') {
 			x = atoi(postfix);
-			push(p, x);
+			tmp = novoStablo(x);
+			push(tmp);
 		}
 		else {
 			a = pop(p);
 			b = pop(p);
-
-			push(p, postfix[0]);
-			while (p->next != NULL) p = p->next;
+			tmp = novoStablo(postfix[0]);
+			tmp->l->elSt = b;
+			tmp->r->elSt = a;
+			push(tmp);
 			
-			/*switch (postfix[0]) {
-			case '+':push(p, a + b); break;
-			case '*':push(p, a * b); break;
-			case '-':push(p, a - b); break;
-			case '/':	if (NULL == a) {
-				printf("\ndijeljenje s nulom\n");
-				return 0;
-			}
-					push(p, (float)(a / b)); break;
-			}*/
 		}
 	}
 	return 0;
 }
 
-int IspisInfix(Pozicija p, char* filename) {
-
+int IspisInfix(PozicijaStablo p, char* filename) {
+		FILE* b = fopen("a.txt", "a");
 	if (p != NULL) {
 		IspisInfix(p->l, filename);
-		if(p->el>='0' && p->el<='9')
-		fprintf(filename, "%c   ", p->el);
+		if(p->elSt>='0' && p->elSt<='9')
+		fprintf(b, "%c   ", p->elSt);
 		IspisInfix(p->r, filename);
 	}
 	return 0;
