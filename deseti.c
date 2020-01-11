@@ -42,8 +42,8 @@ int main() {
 	filename = naziv(filename);
 	push3(&stog);
 	racunaj(stog, filename, &stablo);
-    IspisInfix(stablo);
-
+   	IspisInfix(stablo);
+	
 	return 0;
 }
 
@@ -95,7 +95,7 @@ int pop(Pozicija p, PozicijaStablo *x) {
 int push(Pozicija p, PozicijaStablo x) {
 
 	Pozicija q = NULL;
-	if(push3(&q)) return 0;
+	if(push3(&q)) return 0; //nean pojma
 	q->el = x;
 	q->next = p->next;
 	p->next = q;
@@ -115,8 +115,7 @@ int racunaj(Pozicija p, char* filename, PozicijaStablo *x) {
 	f = fopen(filename, "r");
 	while (!feof(f)) {
 
-        pushStablo(&q);
-
+        	pushStablo(&q);
 		fscanf(f, " %s", postfix);
 		duzina = strlen(postfix);
 		q->elSt = (char*)malloc(sizeof(char) * duzina);
@@ -134,8 +133,8 @@ int racunaj(Pozicija p, char* filename, PozicijaStablo *x) {
 
 	fclose(f);
 	free(postfix);
-    pop(p, &q);
-    *x = q;
+    	pop(p, &q);
+    	*x = q;
 	return 0;
 }
 
