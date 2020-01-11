@@ -1,3 +1,5 @@
+//dodat provjere alokacije, inicijalizirat varijable na nulu, ta sranja
+
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LENGTH 1024
 
@@ -6,56 +8,67 @@
 #include<string.h>
 #include<ctype.h>
 
-
-typedef struct Clan* Pozicija;
 typedef struct Stablo* PozicijaStablo;
+typedef struct Clan* Pozicija;
 
 typedef struct Stablo {
 
-	int elSt;
+	char* elSt;
 	PozicijaStablo r;
 	PozicijaStablo l;
-	Pozicija stog;
-
 }stablo;
 
 typedef struct Clan {
 
+    PozicijaStablo el;
 	Pozicija next;
-	
 }clan;
 
 char* naziv(char*);
-int ispis(Pozicija);
-int pop(PozicijaStablo);
-int push(Pozicija, int);
-int racunaj(Pozicija, char*);
-int IspisInfix(Pozicija, char*);
+int pop(Pozicija, PozicijaStablo*);
+int push(Pozicija, PozicijaStablo);
+int racunaj(Pozicija, char*, PozicijaStablo*);
+int IspisInfix(PozicijaStablo);
+int pushStablo(PozicijaStablo*);
+int push3(Pozicija*);
 
 int main() {
 
-	clan stog;
+	Pozicija stog;
+	PozicijaStablo stablo;
 	FILE* b = fopen("a.txt", "a");
 	char* filename = NULL;
-	stog.next = NULL;
+
 	filename = naziv(filename);
-	racunaj(&stog, filename);
-	fprintf(b, "\n\n");
-	IspisInfix(&stog, filename);
+	push3(&stog);
+	racunaj(stog, filename, &stablo);
+    IspisInfix(stablo);
 
 	return 0;
 }
 
-PozicijaStablo novoStablo(int x){
+int pushStablo(PozicijaStablo *x){
 
 	PozicijaStablo q = NULL;
 	q = (PozicijaStablo)malloc(sizeof(stablo));
-	q->elSt = x;
+	q->elSt = NULL;
 	q->l = NULL;
 	q->r = NULL;
-	return q;
+	*x = q;
 
+	return 0;
 }
+
+int push3(Pozicija *x){
+
+	Pozicija q = NULL;
+	q = (Pozicija)malloc(sizeof(clan));
+	q->el = NULL;
+	q->next = NULL;
+	*x = q;
+	return 0;
+}
+
 
 char* naziv(char* fileName) {
 
@@ -66,72 +79,74 @@ char* naziv(char* fileName) {
 	return fileName;
 }
 
-int pop(PozicijaStablo p) {
-	int priv = 0;
-	Pozicija q = NULL;
-	while (p->stog->next->next != NULL)p->stog = p->stog->next;
-	if (p->stog->next->next == NULL) {
-		q = p->stog->next;
-		priv = p->elSt;
-		p->stog->next = NULL;
-		free(q);
-		return priv;
-	}
-	else if (p->stog->next == NULL) {
-		q = p->stog->next;
-		priv = p->elSt;
-		p->stog->next = NULL;
-		free(q);
-		return priv;
-	}
-}
+int pop(Pozicija p, PozicijaStablo *x) {
 
-int push(PozicijaStablo p) {
+	Pozicija priv = NULL;
+	PozicijaStablo q = NULL;
+	priv = p->next;
+	p->next = priv->next;
+	q = priv->el;
+	free(priv);
+	*x = q;
 
-	Pozicija q = NULL;
-	while (p->stog->next != NULL)p->stog = p->stog->next;
-	q = (Pozicija)malloc(sizeof(clan));
-	//q->el = x;
-	q->next = p->stog->next;
-	p->stog->next = q;
 	return 0;
 }
 
-int racunaj(Pozicija p, char* filename) {
+int push(Pozicija p, PozicijaStablo x) {
 
-	FILE* f;
-	PozicijaStablo tmp = NULL;
-	int x, a, b;
-	char postfix[20];
+	Pozicija q = NULL;
+	if(push3(&q)) return 0;
+	q->el = x;
+	q->next = p->next;
+	p->next = q;
+
+	return 0;
+}
+
+int racunaj(Pozicija p, char* filename, PozicijaStablo *x) {
+
+	FILE* f = NULL;
+	PozicijaStablo q = NULL;
+	int br = 0, duzina = 0;
+	char *postfix = NULL;
+
+	postfix = (char*)malloc(MAX_LENGTH * sizeof(char));
+
 	f = fopen(filename, "r");
 	while (!feof(f)) {
 
-		fscanf(f, "%s", postfix);
-		if (postfix[0] >= '0' && postfix[0] <= '9') {
-			x = atoi(postfix);
-			tmp = novoStablo(x);
-			push(tmp);
+        pushStablo(&q);
+
+		fscanf(f, " %s", postfix);
+		duzina = strlen(postfix);
+		q->elSt = (char*)malloc(sizeof(char) * duzina);
+		strcpy(q->elSt, postfix);
+		q->l = NULL;
+		q->r = NULL;
+
+		duzina = sscanf(postfix, " %d", &br);
+		if(duzina <= 0) { //nean pojma
+			pop(p, &q->r);
+			pop(p, &q->l);
 		}
-		else {
-			a = pop(p);
-			b = pop(p);
-			tmp = novoStablo(postfix[0]);
-			tmp->l->elSt = b;
-			tmp->r->elSt = a;
-			push(tmp);
-			
-		}
+		push(p, q);
 	}
+
+	fclose(f);
+	free(postfix);
+    pop(p, &q);
+    *x = q;
 	return 0;
 }
 
-int IspisInfix(PozicijaStablo p, char* filename) {
-		FILE* b = fopen("a.txt", "a");
+int IspisInfix(PozicijaStablo p) {
+
 	if (p != NULL) {
-		IspisInfix(p->l, filename);
-		if(p->elSt>='0' && p->elSt<='9')
-		fprintf(b, "%c   ", p->elSt);
-		IspisInfix(p->r, filename);
+        if (p->l != NULL) printf(" ( ");
+		IspisInfix(p->l);
+		printf(" %s", p->elSt);
+		IspisInfix(p->r);
+        if (p->r != NULL) printf(" ) ");
 	}
 	return 0;
 }
