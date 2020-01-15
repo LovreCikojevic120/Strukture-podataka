@@ -1,5 +1,3 @@
-//dodat provjere alokacije, inicijalizirat varijable na nulu, ta sranja
-
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LENGTH 1024
 
@@ -34,8 +32,8 @@ int push3(Pozicija*);
 
 int main() {
 
-	Pozicija stog;
-	PozicijaStablo stablo;
+	Pozicija stog = NULL;
+	PozicijaStablo stablo = NULL;
 	FILE* b = fopen("a.txt", "a");
 	char* filename = NULL;
 
@@ -43,7 +41,7 @@ int main() {
 	push3(&stog);
 	racunaj(stog, filename, &stablo);
    	IspisInfix(stablo);
-	
+
 	return 0;
 }
 
@@ -51,6 +49,10 @@ int pushStablo(PozicijaStablo *x){
 
 	PozicijaStablo q = NULL;
 	q = (PozicijaStablo)malloc(sizeof(stablo));
+	if(q == NULL){
+        printf("Greska alokacije\n");
+        return 0;
+	}
 	q->elSt = NULL;
 	q->l = NULL;
 	q->r = NULL;
@@ -63,6 +65,10 @@ int push3(Pozicija *x){
 
 	Pozicija q = NULL;
 	q = (Pozicija)malloc(sizeof(clan));
+	if(q == NULL){
+        printf("Greska alokacije\n");
+        return 0;
+	}
 	q->el = NULL;
 	q->next = NULL;
 	*x = q;
@@ -73,6 +79,10 @@ int push3(Pozicija *x){
 char* naziv(char* fileName) {
 
 	fileName = (char*)malloc(MAX_LENGTH * sizeof(char));
+	if(fileName == NULL){
+        printf("Greska alokacije\n");
+        return 0;
+	}
 	printf("Ime datoteke?\n");
 	scanf("%s", fileName);
 	if (strchr(fileName, '.') == NULL)strcat(fileName, ".txt");
@@ -95,7 +105,7 @@ int pop(Pozicija p, PozicijaStablo *x) {
 int push(Pozicija p, PozicijaStablo x) {
 
 	Pozicija q = NULL;
-	if(push3(&q)) return 0; //nean pojma
+	if(push3(&q)) return 0;
 	q->el = x;
 	q->next = p->next;
 	p->next = q;
@@ -111,6 +121,10 @@ int racunaj(Pozicija p, char* filename, PozicijaStablo *x) {
 	char *postfix = NULL;
 
 	postfix = (char*)malloc(MAX_LENGTH * sizeof(char));
+	if(postfix == NULL){
+        printf("Greska alokacije\n");
+        return 0;
+	}
 
 	f = fopen(filename, "r");
 	while (!feof(f)) {
@@ -119,12 +133,16 @@ int racunaj(Pozicija p, char* filename, PozicijaStablo *x) {
 		fscanf(f, " %s", postfix);
 		duzina = strlen(postfix);
 		q->elSt = (char*)malloc(sizeof(char) * duzina);
+		if(q->elSt == NULL){
+            printf("Greska alokacije\n");
+            return 0;
+        }
 		strcpy(q->elSt, postfix);
 		q->l = NULL;
 		q->r = NULL;
 
 		duzina = sscanf(postfix, " %d", &br);
-		if(duzina <= 0) { //nean pojma
+		if(duzina <= 0) {
 			pop(p, &q->r);
 			pop(p, &q->l);
 		}
