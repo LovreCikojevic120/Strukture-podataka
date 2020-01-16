@@ -62,13 +62,30 @@ int sortiraj(void* p1, void* p2) {
 }
 
 int ispisTablice(hashTabPoz hash) {
-	
+
 	lista printer = NULL;
-	int i = 0;
+	int i = 0, br = 0, mb = 0;
+	char c = NULL;
+	printf("zelis li ispisati i maticni broj? (d/n)\n");
+	scanf(" %c", &c);
+	if(c == 'd') mb++;
+	else if(c == 'n') mb = 0;
+	else printf("krivi unos! jbg nema veze racuna se ka da ne zelis\n");
+
 	for (i = 0; i < 11; i++) {
+            printf("\n");
+            br = 0;
 		printer = hash->hashListe[i];
 		while (printer != NULL) {
-			printf("Index:%d\t%s %s %d\n", i, printer->ime, printer->prezime, printer->matBroj);
+            if(!br){
+                printf("Index %d: %s %s", i, printer->ime, printer->prezime);
+                if(mb) printf(" %d", printer->matBroj);
+                br++;
+            }
+            else{
+                printf(" , %s %s", printer->ime, printer->prezime);
+                if(mb) printf(" %d", printer->matBroj);
+            }
 			printer = printer->next;
 		}
 	}
@@ -76,23 +93,19 @@ int ispisTablice(hashTabPoz hash) {
 }
 
 /*int unos(poz p) {
-
 	int i = 0, zbroj = 0;
 	lista q = NULL;
 	printf("\nza kraj unesite 'stop'\n");
-
 	while (1) {
 		q = (poz)malloc(sizeof(cvor));
 		printf("Ime, prezime, maticni broj:\n");
 		scanf(" %s", &q->ime);
-		if (!strcmp(q->ime, "stop")) { 
+		if (!strcmp(q->ime, "stop")) {
 			free(q);
-			break; 
+			break;
 		}
-
 		scanf(" %s %d", &q->prezime, &q->matBroj);
-
-		kljuc(q);	
+		kljuc(q);
 	}
 	return q;
 }*/
@@ -123,14 +136,16 @@ int dodaj(hashTabPoz hash) {
 
 		kljuc(p);
 
-		
+
 		//p = unos(p);
 		target = hash->hashListe[p->kljuc];
 
-		while (!strcmp(target->prezime, p->prezime) && target != NULL)target = target->next;//while (target != NULL && target->matBroj != p->matBroj)target = target->next;
+		while (target != NULL && !strcmp(target->prezime, p->prezime))target = target->next;//while (target != NULL && target->matBroj != p->matBroj)target = target->next;
 		if (target == NULL) {
 			p->next = hash->hashListe[p->kljuc];
 			hash->hashListe[p->kljuc] = p;
+			//p->next = target;
+			//target = p;
 		}
 		else if (target->prezime > p->prezime) {
 
@@ -149,13 +164,13 @@ hashTabPoz inic(int size) {
 	h = (hashTabPoz)malloc(sizeof(hashT));
 	if (h == NULL) {
 		printf("Greska u alokaciji!\n");
-		return -1;
+		return 0;
 	}
 	h->tabSize = size;
 	h->hashListe = (lista*)malloc(h->tabSize * sizeof(lista));
 	if (h->hashListe == NULL) {
 		printf("Greska\n");
-		return -1;
+		return 0;
 	}
 
 	for (i = 0; i < h->tabSize; i++) {
