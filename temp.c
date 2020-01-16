@@ -48,9 +48,7 @@ int main() {
 	hashTabPoz hashTablica = NULL;
 	hashTablica = inic(11);
 	dodaj(hashTablica);
-	/*for (i = 0; i < hashTablica->tabSize; i++) {
-		qsort(hashTablica->hashListe[i], 2, sizeof(cvor), sortiraj);
-	}*/
+	
 	ispisTablice(hashTablica);
 	return 0;
 }
@@ -63,14 +61,9 @@ int sorter(char* p1, char* p2) {
 		else if (p1[i] == p2[i])i++;
 		else return 0;
 	}
+	return 0;
 }
 
-int sortiraj(void* p1, void* p2) {
-
-	poz lik1 = p1;
-	poz lik2 = p2;
-	return strcmp(lik1->ime, lik2->ime);
-}
 
 int ispisTablice(hashTabPoz hash) {
 
@@ -102,24 +95,6 @@ int ispisTablice(hashTabPoz hash) {
 	return 0;
 }
 
-/*int unos(poz p) {
-	int i = 0, zbroj = 0;
-	lista q = NULL;
-	printf("\nza kraj unesite 'stop'\n");
-	while (1) {
-		q = (poz)malloc(sizeof(cvor));
-		printf("Ime, prezime, maticni broj:\n");
-		scanf(" %s", &q->ime);
-		if (!strcmp(q->ime, "stop")) {
-			free(q);
-			break;
-		}
-		scanf(" %s %d", &q->prezime, &q->matBroj);
-		kljuc(q);
-	}
-	return q;
-}*/
-
 int kljuc(poz q) {
 	int i = 0, zbroj = 0;
 	for (i = 0; i < 5; i++) {
@@ -146,26 +121,32 @@ int dodaj(hashTabPoz hash) {
 
 		kljuc(p);
 
-
-		//p = unos(p);
 		target = hash->hashListe[p->kljuc];
-		if (target == NULL) {
+		if (target->next == NULL) {
 
-			p->next = hash->hashListe[p->kljuc];
-			hash->hashListe[p->kljuc] = p;
+			p->next = target;
+			target->next = p;
 		}
 
-		while (target != NULL) {
-			
-			if (target != NULL && sorter(target->ime, p->ime)) {
+		while (target->next != NULL) {
+
+			if (strcmp(p->prezime, target->prezime) > 0 || (strcmp(p->prezime, target->prezime) == 0 && strcmp(p->ime, target->ime) > 0)) {
+				p->next = target;
+			}
+
+			else
+			{
+				while (target->next != NULL && (strcmp(p->prezime, target->next->prezime) < 0))
+					target = target->next;
+
+				if (strcmp(p->prezime, target->next->prezime) == 0)
+					while (target->next != NULL && strcmp(p->prezime, target->next->prezime) == 0 && strcmp(p->ime, target->ime) < 0)
+						target = target->next;
 
 				p->next = target->next;
 				target->next = p;
-				target = target->next;
 			}
-			else target = target->next;
 		}
-		target = NULL;
 	}
 	return 0;
 }
