@@ -29,7 +29,6 @@ typedef struct Cvor {
 typedef struct HashTab {
 
 	int tabSize;
-	int index;
 	lista* hashListe;
 }hashT;
 
