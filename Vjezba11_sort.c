@@ -39,27 +39,64 @@ int dodaj(hashTabPoz);
 int unos(poz);
 int kljuc(poz);
 int ispisTablice(hashTabPoz);
-int sortiraj(void*, void*);
+int sorter(char*, char*);
 
 int main() {
 
-	int i;
+	int x = 0;
 	hashTabPoz hashTablica = NULL;
 	hashTablica = inic(11);
-	dodaj(hashTablica);
-	/*for (i = 0; i < hashTablica->tabSize; i++) {
-		qsort(hashTablica->hashListe[i], 2, sizeof(cvor), sortiraj);
-	}*/
-	ispisTablice(hashTablica);
+	do {
+		printf("\nZa dodat upisi 1, za ispis 2, za trazenje maticnog broja 3, za kraj 4\n");
+		scanf("%d", &x);
+		switch (x) {
+		case 1:	dodaj(hashTablica);
+			break;
+
+		case 2:	ispisTablice(hashTablica);
+			break;
+
+		case 3:	nadiLika(hashTablica);
+			break;
+
+		case 4:	return 0;
+		}
+	} while (x != 4);
 	return 0;
 }
 
-int sortiraj(void* p1, void* p2) {
+int sorter(char* p1, char* p2) {
 
-	poz lik1 = p1;
-	poz lik2 = p2;
-	return strcmp(lik1->ime, lik2->ime);
+	int i = 0;
+	while (p1[i] != '\0' && p2[i] != '\0') {
+		if (p1[i] > p2[i])return 1;
+		else if (p1[i] == p2[i])i++;
+		else return -1;
+	}
+	return 0;
 }
+
+int nadiLika(hashTabPoz hash) {
+
+	lista pathFinder = NULL;
+	poz p = (poz)malloc(sizeof(cvor));
+	if (p == NULL)return 0;
+	printf("\nupisi ime i prezime\n");
+	scanf("%s %s", &p->ime, &p->prezime);
+	p->kljuc = kljuc(p);
+	pathFinder = hash->hashListe[p->kljuc];
+	while (pathFinder != NULL) {
+		if (!sorter(pathFinder->ime, p->ime) && !sorter(pathFinder->prezime, p->prezime))break;
+		pathFinder = pathFinder->next;
+	}
+	if (pathFinder == NULL)return 0;
+
+	printf("Maticni broj trazene osobe je: %d", pathFinder->matBroj);
+
+	return 0;
+
+}
+
 
 int ispisTablice(hashTabPoz hash) {
 
@@ -68,47 +105,31 @@ int ispisTablice(hashTabPoz hash) {
 	char c = NULL;
 	printf("zelis li ispisati i maticni broj? (d/n)\n");
 	scanf(" %c", &c);
-	if(c == 'd') mb++;
-	else if(c == 'n') mb = 0;
-	else printf("krivi unos! jbg nema veze racuna se ka da ne zelis\n");
+	if (c == 'd') mb++;
+	else if (c == 'n') mb = 0;
+	else { 
+		printf("krivi unos!\n");
+		return 0; 
+	}
 
 	for (i = 0; i < 11; i++) {
-            printf("\n");
-            br = 0;
+		br = 0;
 		printer = hash->hashListe[i];
 		while (printer != NULL) {
-            if(!br){
-                printf("Index %d: %s %s", i, printer->ime, printer->prezime);
-                if(mb) printf(" %d", printer->matBroj);
-                br++;
-            }
-            else{
-                printf(" , %s %s", printer->ime, printer->prezime);
-                if(mb) printf(" %d", printer->matBroj);
-            }
+			if (!br) {
+				printf("\nIndex %d: %s %s", i, printer->ime, printer->prezime);
+				if (mb) printf(" %d", printer->matBroj);
+				br++;
+			}
+			else {
+				printf(" , %s %s", printer->ime, printer->prezime);
+				if (mb) printf(" %d", printer->matBroj);
+			}
 			printer = printer->next;
 		}
 	}
 	return 0;
 }
-
-/*int unos(poz p) {
-	int i = 0, zbroj = 0;
-	lista q = NULL;
-	printf("\nza kraj unesite 'stop'\n");
-	while (1) {
-		q = (poz)malloc(sizeof(cvor));
-		printf("Ime, prezime, maticni broj:\n");
-		scanf(" %s", &q->ime);
-		if (!strcmp(q->ime, "stop")) {
-			free(q);
-			break;
-		}
-		scanf(" %s %d", &q->prezime, &q->matBroj);
-		kljuc(q);
-	}
-	return q;
-}*/
 
 int kljuc(poz q) {
 	int i = 0, zbroj = 0;
@@ -124,8 +145,13 @@ int kljuc(poz q) {
 int dodaj(hashTabPoz hash) {
 
 	lista target = NULL;
-	poz p = NULL;
+	poz p = NULL, temp = NULL;
+	int Kljuc = 0;
+	printf("Upisi stop za kraj unosa\n");
+
 	while (1) {
+		
+		target = NULL;
 		p = (poz)malloc(sizeof(cvor));
 		p->next = NULL;
 		printf("Ime, prezime, maticni broj:\n");
@@ -134,25 +160,32 @@ int dodaj(hashTabPoz hash) {
 
 		scanf(" %s %d", &p->prezime, &p->matBroj);
 
-		kljuc(p);
+		Kljuc = kljuc(p);
 
+		target = hash->hashListe[Kljuc];
 
-		//p = unos(p);
-		target = hash->hashListe[p->kljuc];
-
-		while (target != NULL && !strcmp(target->prezime, p->prezime))target = target->next;//while (target != NULL && target->matBroj != p->matBroj)target = target->next;
 		if (target == NULL) {
-			p->next = hash->hashListe[p->kljuc];
-			hash->hashListe[p->kljuc] = p;
-			//p->next = target;
-			//target = p;
-		}
-		else if (target->prezime > p->prezime) {
 
-			p->next = target->next;
-			target->next = p;
+			hash->hashListe[Kljuc] = p;
 		}
-		else target = target->next;
+
+		else if ((strcmp(p->prezime, target->prezime) < 0 || (strcmp(p->prezime, target->prezime) == 0) && strcmp(p->ime, target->ime) < 0)) {
+				p->next = target;
+				hash->hashListe[Kljuc] = p;
+		}
+
+		else{
+				while (target->next != NULL && (strcmp(p->prezime, target->next->prezime) > 0))
+					target = target->next;
+
+				if (strcmp(p->prezime, target->next->prezime) == 0)
+					while (target->next != NULL && strcmp(p->prezime, target->next->prezime) == 0 && strcmp(p->ime, target->ime) < 0)
+						target = target->next;
+
+				temp = target->next;
+				target->next = p;
+				p->next = temp;
+		}
 	}
 	return 0;
 }
