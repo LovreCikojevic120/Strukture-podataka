@@ -40,6 +40,7 @@ int unos(poz);
 int kljuc(poz);
 int ispisTablice(hashTabPoz);
 int sorter(char*, char*);
+int nadiLika(hashTabPoz);
 
 int main() {
 
@@ -49,6 +50,7 @@ int main() {
 	dodaj(hashTablica);
 	
 	ispisTablice(hashTablica);
+	nadiLika(hashTablica);
 	return 0;
 }
 
@@ -61,6 +63,25 @@ int sorter(char* p1, char* p2) {
 		else return 0;
 	}
 	return 0;
+}
+
+int nadiLika(hashTabPoz hash) {
+
+	lista pathFinder = NULL;
+	poz p = (poz)malloc(sizeof(cvor));
+	if (p == NULL)return 0;
+	printf("\nupisi ime i prezime\n");
+	scanf("%s %s", &p->ime, &p->prezime);
+	p->kljuc = kljuc(p);
+	pathFinder = hash->hashListe[p->kljuc];
+	while (pathFinder->next != NULL) {
+		if (!sorter(pathFinder->ime, p->ime) && !sorter(pathFinder->prezime, p->prezime))break;
+		pathFinder = pathFinder->next;
+	}
+	printf("Maticni broj trazene osobe je: %d", pathFinder->matBroj);
+
+	return 0;
+
 }
 
 
