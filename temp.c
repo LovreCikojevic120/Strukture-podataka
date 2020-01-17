@@ -39,7 +39,6 @@ int dodaj(hashTabPoz);
 int unos(poz);
 int kljuc(poz);
 int ispisTablice(hashTabPoz);
-int sortiraj(void*, void*);
 int sorter(char*, char*);
 
 int main() {
@@ -74,7 +73,7 @@ int ispisTablice(hashTabPoz hash) {
 	scanf(" %c", &c);
 	if (c == 'd') mb++;
 	else if (c == 'n') mb = 0;
-	else printf("krivi unos! jbg nema veze racuna se ka da ne zelis\n");
+	else printf("krivi unos!\n");
 
 	for (i = 0; i < 11; i++) {
 		br = 0;
@@ -109,43 +108,45 @@ int kljuc(poz q) {
 int dodaj(hashTabPoz hash) {
 
 	lista target = NULL;
-	poz p = NULL;
+	poz p = NULL, temp = NULL;
+	int Kljuc = 0;
+	//char* check;
+
 	while (1) {
+		
 		p = (poz)malloc(sizeof(cvor));
 		p->next = NULL;
 		printf("Ime, prezime, maticni broj:\n");
 		scanf(" %s", &p->ime);
+		//strcpy(check, p->ime);
 		if (!strcmp(p->ime, "stop")) break;
 
 		scanf(" %s %d", &p->prezime, &p->matBroj);
 
-		kljuc(p);
+		Kljuc = kljuc(p);
 
-		target = hash->hashListe[p->kljuc];
-		if (target->next == NULL) {
+		target = hash->hashListe[Kljuc];
 
-			p->next = target;
-			target->next = p;
+		if (target == NULL) {
+
+			hash->hashListe[Kljuc] = p;
 		}
 
-		while (target->next != NULL) {
-
-			if (strcmp(p->prezime, target->prezime) > 0 || (strcmp(p->prezime, target->prezime) == 0 && strcmp(p->ime, target->ime) > 0)) {
+		else if (strcmp(p->prezime, target->prezime) > 0 || (strcmp(p->prezime, target->prezime) == 0 && strcmp(p->ime, target->ime) > 0)) {
 				p->next = target;
-			}
+		}
 
-			else
-			{
-				while (target->next != NULL && (strcmp(p->prezime, target->next->prezime) < 0))
+		else{
+				while (target->next != NULL && (strcmp(p->prezime, target->prezime) < 0))
 					target = target->next;
 
-				if (strcmp(p->prezime, target->next->prezime) == 0)
-					while (target->next != NULL && strcmp(p->prezime, target->next->prezime) == 0 && strcmp(p->ime, target->ime) < 0)
+				if (strcmp(p->prezime, target->prezime) == 0)
+					while (target->next != NULL && strcmp(p->prezime, target->prezime) == 0 && strcmp(p->ime, target->ime) < 0)
 						target = target->next;
 
-				p->next = target->next;
+				target->next = temp;
 				target->next = p;
-			}
+				p->next = temp;
 		}
 	}
 	return 0;
