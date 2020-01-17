@@ -40,11 +40,9 @@ int unos(poz);
 int kljuc(poz);
 int ispisTablice(hashTabPoz);
 int sorter(char*, char*);
-int nadiLika(hashTabPoz);
 
 int main() {
 
-	int i;
 	hashTabPoz hashTablica = NULL;
 	hashTablica = inic(11);
 	dodaj(hashTablica);
@@ -60,7 +58,7 @@ int sorter(char* p1, char* p2) {
 	while (p1[i] != '\0' && p2[i] != '\0') {
 		if (p1[i] > p2[i])return 1;
 		else if (p1[i] == p2[i])i++;
-		else return 0;
+		else return -1;
 	}
 	return 0;
 }
@@ -74,10 +72,12 @@ int nadiLika(hashTabPoz hash) {
 	scanf("%s %s", &p->ime, &p->prezime);
 	p->kljuc = kljuc(p);
 	pathFinder = hash->hashListe[p->kljuc];
-	while (pathFinder->next != NULL) {
+	while (pathFinder != NULL) {
 		if (!sorter(pathFinder->ime, p->ime) && !sorter(pathFinder->prezime, p->prezime))break;
 		pathFinder = pathFinder->next;
 	}
+	if (pathFinder == NULL)return 0;
+
 	printf("Maticni broj trazene osobe je: %d", pathFinder->matBroj);
 
 	return 0;
@@ -131,15 +131,14 @@ int dodaj(hashTabPoz hash) {
 	lista target = NULL;
 	poz p = NULL, temp = NULL;
 	int Kljuc = 0;
-	//char* check;
 
 	while (1) {
 		
+		target = NULL;
 		p = (poz)malloc(sizeof(cvor));
 		p->next = NULL;
 		printf("Ime, prezime, maticni broj:\n");
 		scanf(" %s", &p->ime);
-		//strcpy(check, p->ime);
 		if (!strcmp(p->ime, "stop")) break;
 
 		scanf(" %s %d", &p->prezime, &p->matBroj);
@@ -153,19 +152,20 @@ int dodaj(hashTabPoz hash) {
 			hash->hashListe[Kljuc] = p;
 		}
 
-		else if (strcmp(p->prezime, target->prezime) > 0 || (strcmp(p->prezime, target->prezime) == 0 && strcmp(p->ime, target->ime) > 0)) {
+		else if ((strcmp(p->prezime, target->prezime) < 0 || (strcmp(p->prezime, target->prezime) == 0) && strcmp(p->ime, target->ime) < 0)) {
 				p->next = target;
+				hash->hashListe[Kljuc] = p;
 		}
 
 		else{
-				while (target->next != NULL && (strcmp(p->prezime, target->prezime) < 0))
+				while (target->next != NULL && (strcmp(p->prezime, target->next->prezime) > 0))
 					target = target->next;
 
-				if (strcmp(p->prezime, target->prezime) == 0)
-					while (target->next != NULL && strcmp(p->prezime, target->prezime) == 0 && strcmp(p->ime, target->ime) < 0)
+				if (strcmp(p->prezime, target->next->prezime) == 0)
+					while (target->next != NULL && strcmp(p->prezime, target->next->prezime) == 0 && strcmp(p->ime, target->ime) < 0)
 						target = target->next;
 
-				target->next = temp;
+				temp = target->next;
 				target->next = p;
 				p->next = temp;
 		}
